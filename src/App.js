@@ -1,5 +1,6 @@
 import {
    BrowserRouter,
+   Navigate,
   //  Link, 
    Route,
    Routes 
@@ -23,6 +24,7 @@ function App() {
 
      {/* 配置路由的规则 */}
      <Routes>
+       <Route path="/"  element={< Navigate to="/home"/>}/>
        <Route path="/home" element={<Home/>}></Route>
        <Route path="/login" element={<Login/>}></Route>
      </Routes>
