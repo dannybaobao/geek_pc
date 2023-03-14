@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 
-export class Layout extends PureComponent {
+export class Home extends PureComponent {
   render() {
     return (
       <div>首页布局组件</div>
@@ -8,4 +8,4 @@ export class Layout extends PureComponent {
   }
 }
 
-export default  Layout
+export default  Home

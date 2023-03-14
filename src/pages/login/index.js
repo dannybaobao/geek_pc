@@ -1,12 +1,40 @@
 import React, { PureComponent } from 'react'
-import { Card, Button, Checkbox, Form, Input } from 'antd'
+import { Card, Button, Checkbox, Form, Input ,message} from 'antd'
+import { Navigate } from 'react-router-dom'
 
 import './index.scss'
+import { getLoginData } from 'services'
 
 export class Login extends PureComponent {
-
-  onFinish = (values) => {
-    console.log(values)
+  constructor(props) {
+    super(props)
+    this.state= {
+      isLogin: null
+    }
+  }
+  
+  onFinish = async(values) => {
+        const {mobile, code} = values
+        const res = await getLoginData(mobile,code)
+        console.log(res)
+        const status = res.status
+        const error = res.response.data.message
+        // 登录成功
+     
+        if(status===201) {
+        // 1.保存token
+        localStorage.setItem('token', res.data.token)
+        // 2.修改state
+        this.setState({ isLogin: true })
+         // 3.提示信息
+        message.success('登陆成功，欢迎',1)
+      }  else {
+        
+        // console.dir(error)
+        // message.warning('颠三倒四')
+        message.error(error,1)
+      }  
+     
   }
   
   
@@ -14,6 +42,9 @@ export class Login extends PureComponent {
     return (
       // 起一个类名
       <div className="login">
+        {/* 跳转到首页 */}
+        { this.state.isLogin &&<Navigate to='/home' replace='true'/>
+        } 
         <Card className="login-container">
           <img
             src={require('../../assets/logo.png')}
@@ -24,6 +55,7 @@ export class Login extends PureComponent {
           <Form 
             size='large' 
             validateTrigger= {['onChange', 'onBlur']}
+           
             onFinish={this.onFinish}
             initialValues={{
               mobile:'13911111111',
@@ -85,12 +117,13 @@ export class Login extends PureComponent {
               </Button>
             </Form.Item>
           </Form>
-        </Card>
-      </div>
+        </Card> 
+      </div> 
     )
   }
 
 
+  
 }
 
 

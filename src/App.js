@@ -1,5 +1,5 @@
 import {
-   BrowserRouter,
+  
    Navigate,
   //  Link, 
    Route,
@@ -17,21 +17,21 @@ import Login from "pages/login";
 
 function App() {
   return (
-  <BrowserRouter>
-   <div className="App">
+  
+   <div className="App" >
      {/* <Link to='/login'>登录</Link>
      <Link to='/home'>首页</Link> */}
 
      {/* 配置路由的规则 */}
-     <Routes>
+     <Routes >
        <Route path="/"  element={< Navigate to="/home"/>}/>
-       <Route path="/home" element={<Home/>}></Route>
-       <Route path="/login" element={<Login/>}></Route>
+       <Route path="/home" element={<Home />}></Route>
+       <Route path="/login" element={<Login />}></Route>
      </Routes>
      
     </div>
  
-  </BrowserRouter>
+  
      
   );
 }
