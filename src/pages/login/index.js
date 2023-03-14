@@ -18,12 +18,12 @@ export class Login extends PureComponent {
         const res = await getLoginData(mobile,code)
         console.log(res)
         const status = res.status
-        const error = res.response.data.message
+        const error = res.response?.data.message
         // 登录成功
      
         if(status===201) {
         // 1.保存token
-        localStorage.setItem('token', res.data.token)
+        localStorage.setItem('token', res.data?.token)
         // 2.修改state
         this.setState({ isLogin: true })
          // 3.提示信息
