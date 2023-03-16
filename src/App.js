@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 
-import Layout, { LayoutPanel } from "pages/Layout";
+import  LayoutPanel  from "pages/Layout";
 import Login from "pages/Login";
 
 
