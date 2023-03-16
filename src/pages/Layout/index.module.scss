@@ -1,0 +1,42 @@
+.layout {
+  // layout样式
+  height: 100vh;
+  // 子元素
+  :global {
+    // 这个类名在检查里找的
+   .ant-layout {
+     height: 100%;
+   }
+  //  浏览器检查出是antd给的默认50影响logo靠左
+   .ant-layout-header {
+    padding: 0;
+    padding-right: 15px;
+   }
+   .logo {
+    float: left;
+    width: 200px;
+    height: 60px;
+   
+    background: url(~assets/logo.png);
+    background-size: cover
+    ;
+   }
+
+   .profile {
+    float: right;
+    color: #fff;
+    span + span {
+      margin-left: 25px;
+    }
+   }
+
+   .ant-menu-submenu-arrow {
+    display: none;
+   }
+
+   .ant-menu-submenu {
+    
+   }
+  }
+}
+

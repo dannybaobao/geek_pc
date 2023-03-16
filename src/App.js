@@ -7,8 +7,8 @@ import {
 } from "react-router-dom";
 
 
-import Home from "pages/layout";
-import Login from "pages/login";
+import Layout, { LayoutPanel } from "pages/Layout";
+import Login from "pages/Login";
 
 
 
@@ -25,7 +25,7 @@ function App() {
      {/* 配置路由的规则 */}
      <Routes >
        <Route path="/"  element={< Navigate to="/home"/>}/>
-       <Route path="/home" element={<Home />}></Route>
+       <Route path="/home" element={<LayoutPanel />}></Route>
        <Route path="/login" element={<Login />}></Route>
      </Routes>
      
