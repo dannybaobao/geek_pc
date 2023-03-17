@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { Card, Button, Checkbox, Form, Input ,message} from 'antd'
 import { Navigate } from 'react-router-dom'
 
-import './index.scss'
+import styles from './index.module.scss'
 import { getLoginData } from 'services'
 
 export class Login extends PureComponent {
@@ -23,7 +23,7 @@ export class Login extends PureComponent {
      
         if(status===201) {
         // 1.保存token
-        localStorage.setItem('token', res.data?.token)
+        localStorage.setItem('token', res?.data.token)
         // 2.修改state
         this.setState({ isLogin: true })
          // 3.提示信息
@@ -41,7 +41,7 @@ export class Login extends PureComponent {
   render() {
     return (
       // 起一个类名
-      <div className="login">
+      <div className={styles.login}>
         {/* 跳转到首页 */}
         { this.state.isLogin &&<Navigate to='/home' replace='true'/>
         } 
