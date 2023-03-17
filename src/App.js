@@ -9,10 +9,9 @@ import {
 
 import {LayoutPanel} from "pages/Layout";
 import Login from "pages/Login";
-import ArticleList from 'pages/ArticleList'
-import ArticlePublish from 'pages/ArticlePublish'
-import Home from 'pages/Home'
-import { Layout } from "antd";
+
+
+
 
 
 
@@ -30,6 +29,7 @@ function App() {
        <Route path="/"  element={< Navigate to="/home"/>}>
           
        </Route>
+       {/* 二级路由依赖/home，模糊匹配 */}
        <Route path="/home/*" element={<LayoutPanel />}>
        </Route>
        <Route path="/login" element={<Login />}></Route>
