@@ -1,9 +1,7 @@
 import React, { PureComponent } from 'react'
+import { Routes, Route, Navigate, Link, Outlet } from 'react-router-dom'
 import {
   LogoutOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
   HomeOutlined,
   UnorderedListOutlined,
   EditOutlined,
@@ -11,6 +9,9 @@ import {
 import { Layout, Menu } from 'antd'
 
 import styles from './index.module.scss'
+import ArticleList from 'pages/ArticleList'
+import ArticlePublish from 'pages/ArticlePublish'
+import Home from 'pages/Home'
 
 const { Header, Content, Sider } = Layout
 
@@ -40,32 +41,40 @@ export class LayoutPanel extends PureComponent {
                 items={[
                   {
                     key: '1',
-                    icon: <HomeOutlined />,
-                    label: '数据概览',
+                    icon: <Link to='/'><HomeOutlined /></Link>,
+                    label: <Link to='/'>数据概览</Link>, 
                   },
                   {
                     key: '2',
-                    icon: <UnorderedListOutlined />,
-                    label: '内容管理',
+                    icon: <Link to='/home/list'><UnorderedListOutlined /></Link>,
+                    label:<Link to='/home/list'>内容管理</Link>,
                   },
                   {
                     key: '3',
-                    icon: <EditOutlined />,
-                    label: '发布文章',
+                    icon: <Link to='/home/publish'><EditOutlined /></Link>,
+                    label: <Link to='/home/publish'>发布文章</Link>,
                   },
                 ]}
-              />
+              >
+              </Menu>
             </Sider>
             <Layout style={{ padding: '10px 10px 10px' }}>
               <Content
                 style={{
                   background: '#fff',
-                  padding: 24,
                   margin: 24,
                   minHeight: 280,
+                  height:100
                 }}
               >
-                Content
+               
+                <Routes>
+                  {/* 可以不用精确匹配exact，默认就是 */}
+                  <Route path='/' element={<Home/>}> </Route>
+                  <Route path='/publish' element={<ArticlePublish/>}> </Route>
+                  <Route path='/list' element={<ArticleList/>}> </Route>
+                </Routes>
+                
               </Content>
             </Layout>
           </Layout>
