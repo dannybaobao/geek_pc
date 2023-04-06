@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
-
+import styles from './index.module.scss'
 
 export class Home extends PureComponent {
   render() {
     return (
-      <div>数据概览
-       
-      </div>
+      <div className={styles.home}></div>
     )
   }
 }

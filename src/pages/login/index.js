@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom'
 
 import styles from './index.module.scss'
 import { getLoginData } from 'services'
+import { setToken } from 'utils/storage'
 
 export class Login extends PureComponent {
   constructor(props) {
@@ -16,14 +17,13 @@ export class Login extends PureComponent {
   onFinish = async(values) => {
         const {mobile, code} = values
         const res = await getLoginData(mobile,code)
-        console.log(res)
         const status = res.status
-        const error = res.response?.data.message
+        const error = res.response?.data.data.message
         // 登录成功
      
         if(status===201) {
         // 1.保存token
-        localStorage.setItem('token', res?.data.token)
+        setToken(res.data.data.token)
         // 2.修改state
         this.setState({ isLogin: true })
          // 3.提示信息

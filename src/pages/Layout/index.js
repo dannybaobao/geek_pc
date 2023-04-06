@@ -12,6 +12,8 @@ import styles from './index.module.scss'
 import ArticleList from 'pages/ArticleList'
 import ArticlePublish from 'pages/ArticlePublish'
 import Home from 'pages/Home'
+import { removeToken } from 'utils/storage'
+import { getUserProfile } from 'services/modules/user'
 
 const { Header, Content, Sider} = Layout
 
@@ -19,18 +21,27 @@ export class LayoutPanel extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      isLogOut:null
+      isLogOut:null,
+      profile: '',
     }
   }
   
 // 点击确定触发退出系统
  onConfirm = () => {
   //  移除token
-  localStorage.removeItem('token')
+ removeToken()
   // 跳转到登录页,类用不了hook，这里使用navigate
   this.setState({isLogOut:true})
   message.success('退出成功')
   // 退出逻辑写在这里无效,是组件切换
+}
+
+ async componentDidMount () {
+  const res = await getUserProfile()
+  // console.log(res)
+  this.setState({
+    profile: res.data.data
+  })
 }
 
 
@@ -48,7 +59,7 @@ export class LayoutPanel extends PureComponent {
             {/* 将就logo，可以在样式里用背景图 */}
             <div className="logo" />
             <div className="profile">
-              <span>用户名</span>
+              <span>{this.state.profile.name}</span>
               <span>
                 <Popconfirm
                   placement="topLeft"
@@ -71,6 +82,7 @@ export class LayoutPanel extends PureComponent {
                 theme="dark"
                 mode="inline"
                 defaultSelectedKeys={['1']}
+                // selectedKeys={this.props.locaton.pathname}
                 items={[
                   {
                     key: '1',
