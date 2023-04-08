@@ -112,7 +112,7 @@ export class LayoutPanel extends PureComponent {
                     label: <Link to="/home/publish">发布文章</Link>,
                   },
                 ]}
-              ></Menu>
+              />
             </Sider>
             {/* 内容区域 */}
             <Layout style={{ padding: '10px 10px 10px' }}>
@@ -120,8 +120,8 @@ export class LayoutPanel extends PureComponent {
                 style={{
                   background: '#fff',
                   margin: 24,
-                  minHeight: 280,
-                  height: 100,
+                  minHeight: 100,
+                  
                 }}
               >
                 <Routes>
