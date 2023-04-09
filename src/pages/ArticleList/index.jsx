@@ -7,73 +7,61 @@ import styles from './index.module.scss'
 import { ArticleStatus } from 'api/constants'
 import { getChannels } from 'services/modules/channel'
 import { getArticles } from 'services/modules/article'
+import  defaultImg   from 'assets/error.png'
 
 const { Option } = Select
 
 
 export class ArticleList extends PureComponent {
+  
   columns = [
     {
       title: '封面',
       // dataindex对应数据中某个属性
-      dataIndex: 'name'
+  
+      // 控制这一列自己想要渲染的内容
+      render: (data) => {
+        if(data.cover.type === 0){
+          // 通过观察数据结构，无图渲染该图片,objectFit:'cover'是防止图片失真
+          return <img src={defaultImg} alt="" style={{width:200,height:120, objectFit:'cover'}}/>
+        }
+        // 有图
+        return <img src={data.cover.images[0]} alt="" style={{width:200,height:120,objectFit:'cover'}}/>
+      }
     },
     {
       title: '标题',
-      dataIndex: 'age',
+      dataIndex: 'title',
    
     },
     {
       title: '状态',
-      dataIndex: 'address',
+      dataIndex: 'status',
     
     },
     {
       title: '发布时间',
-      dataIndex: 'tags',
+      dataIndex: 'pubdate',
     },
     {
       title: '阅读数',
-      dataIndex: 'tags',
+      dataIndex: 'read_count',
     },
     {
       title: '评论数',
-      dataIndex: 'tags',
+      dataIndex: 'comment_count',
     },
     {
       title: '点赞数',
-      dataIndex: 'tags',
+      dataIndex: 'like_count',
     },
     {
       title: '操作',
-      dataIndex: 'tags',
+      dataIndex: '',
     },
     
   ]
- 
-  data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sydney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ]
+
 
   state = {
     // 频道列表数据，这里用数组存的，因为后面要用的时候遍历
@@ -82,9 +70,10 @@ export class ArticleList extends PureComponent {
     articles: {}
   }
 
+  
   // 拿到表单的数据状态
   onFinish = (values) => {
-    console.log('Success:', values)
+    console.log('Success:',values)
   }
 
   //频道， 发起网络请求
@@ -111,7 +100,7 @@ export class ArticleList extends PureComponent {
 
   async getArticles() {
     const res = await getArticles()
-    console.log(res)
+    // console.log(res)
     this.setState({
 
       articles: res.data.data
@@ -119,6 +108,9 @@ export class ArticleList extends PureComponent {
   }
 
   render() {
+    const { total_count, results, } =this.state.articles
+    // 打印出来存在组件的数据，观察需要的数据在哪里，然后再在上面columns逻辑里面定位数据
+    console.log(results)
     return (
       <div className={styles.root}>
         <Card
@@ -186,8 +178,9 @@ export class ArticleList extends PureComponent {
           </Form>
         </Card>
 
-        <Card title={'根据筛选条件查询到xxx结果'} >
-          <Table columns={this.columns} dataSource={this.data} />
+        <Card title={`根据筛选条件查询到${total_count}条结果`} >
+          {/* 列数据，一一对应的数据源，rowKey处理报错 */}
+          <Table columns={this.columns} dataSource={results} rowKey="id" />
         </Card>
       </div>
     )

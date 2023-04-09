@@ -115,7 +115,8 @@ export class LayoutPanel extends PureComponent {
               />
             </Sider>
             {/* 内容区域 */}
-            <Layout style={{ padding: '10px 10px 10px' }}>
+            {/* overflow是设置给里面盒子的滚动条，内容多出让盒子滚动其他区域不滚动 */}
+            <Layout style={{ padding: '10px 10px 10px' ,overflow:'auto'}}>
               <Content
                 style={{
                   background: '#fff',
