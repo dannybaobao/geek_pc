@@ -23,6 +23,7 @@ function App() {
      <Link to='/home'>首页</Link> */}
 
      {/* 配置app整体页面路由的规则 */}
+     
      <Routes >
        <Route path="/"  element={< Navigate to="/home"/>}></Route>
        {/* 二级路由依赖/home，模糊匹配 */}

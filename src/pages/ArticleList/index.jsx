@@ -88,9 +88,8 @@ export class ArticleList extends PureComponent {
     {
       title: '操作',
       render(data) {
-        return(
-        <Space>
-   
+        return (
+          <Space>
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
             <Button
               type="primary"
@@ -98,8 +97,8 @@ export class ArticleList extends PureComponent {
               shape="circle"
               icon={<DeleteOutlined />}
             />
-   
-        </Space>)
+          </Space>
+        )
       },
     },
   ]
@@ -147,7 +146,8 @@ export class ArticleList extends PureComponent {
   }
 
   render() {
-    const { total_count, results } = this.state.articles
+    // console.log(this.state.articles),改变页码效果返回的是默认是10条
+    const { total_count, results ,per_page, page} = this.state.articles
     // 打印出来存在组件的数据，观察需要的数据在哪里，然后再在上面columns逻辑里面定位数据
     // console.log(results)
     return (
@@ -218,7 +218,17 @@ export class ArticleList extends PureComponent {
 
         <Card title={`根据筛选条件查询到${total_count}条结果`}>
           {/* 列数据，一一对应的数据源，rowKey处理报错 */}
-          <Table columns={this.columns} dataSource={results} rowKey="id" />
+          <Table 
+          columns={this.columns} 
+          dataSource={results} 
+          rowKey="id" 
+          pagination={{
+            total: total_count,
+            // 这两个值后面会发生变化
+            pageSize: per_page,
+            current: page,
+
+          }}/>
         </Card>
       </div>
     )
