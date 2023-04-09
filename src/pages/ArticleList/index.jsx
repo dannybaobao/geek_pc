@@ -1,5 +1,17 @@
 import React, { PureComponent } from 'react'
-import { Breadcrumb, Card, Form, Radio, Button, Select, Space, DatePicker, Table ,Tag} from 'antd'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import {
+  Breadcrumb,
+  Card,
+  Form,
+  Radio,
+  Button,
+  Select,
+  Space,
+  DatePicker,
+  Table,
+  Tag,
+} from 'antd'
 import { Link } from 'react-router-dom'
 
 import './index.module.scss'
@@ -7,37 +19,55 @@ import styles from './index.module.scss'
 import { ArticleStatus } from 'api/constants'
 import { getChannels } from 'services/modules/channel'
 import { getArticles } from 'services/modules/article'
-import  defaultImg   from 'assets/error.png'
+import defaultImg from 'assets/error.png'
 
 const { Option } = Select
 
-
 export class ArticleList extends PureComponent {
-  
   columns = [
     {
       title: '封面',
       // dataindex对应数据中某个属性
-  
+      // dataIndex加了的话就是直接拿到cover，不加拿到的是整个对象
       // 控制这一列自己想要渲染的内容
       render: (data) => {
-        if(data.cover.type === 0){
+        if (data.cover.type === 0) {
           // 通过观察数据结构，无图渲染该图片,objectFit:'cover'是防止图片失真
-          return <img src={defaultImg} alt="" style={{width:200,height:120, objectFit:'cover'}}/>
+          return (
+            <img
+              src={defaultImg}
+              alt=""
+              style={{ width: 200, height: 120, objectFit: 'cover' }}
+            />
+          )
         }
         // 有图
-        return <img src={data.cover.images[0]} alt="" style={{width:200,height:120,objectFit:'cover'}}/>
-      }
+        return (
+          <img
+            src={data.cover.images[0]}
+            alt=""
+            style={{ width: 200, height: 120, objectFit: 'cover' }}
+          />
+        )
+      },
     },
     {
       title: '标题',
       dataIndex: 'title',
-   
     },
     {
       title: '状态',
       dataIndex: 'status',
-    
+      render(status) {
+        // console.log(data)
+        const obj = ArticleStatus.find((item) => item.id === status)
+        return (
+          <Tag color={obj.color}>
+            {/* 增加不同状态不同颜色 */}
+            {obj.name}
+          </Tag>
+        )
+      },
     },
     {
       title: '发布时间',
@@ -57,27 +87,37 @@ export class ArticleList extends PureComponent {
     },
     {
       title: '操作',
-      dataIndex: '',
+      render(data) {
+        return(
+        <Space>
+   
+            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button
+              type="primary"
+              danger
+              shape="circle"
+              icon={<DeleteOutlined />}
+            />
+   
+        </Space>)
+      },
     },
-    
   ]
-
 
   state = {
     // 频道列表数据，这里用数组存的，因为后面要用的时候遍历
     channels: [],
     // 观察数据，这里用对象存
-    articles: {}
+    articles: {},
   }
 
-  
   // 拿到表单的数据状态
   onFinish = (values) => {
-    console.log('Success:',values)
+    console.log('Success:', values)
   }
 
   //频道， 发起网络请求
-   componentDidMount() {
+  componentDidMount() {
     // 为了性能，把两个异步请求抽出去，让didmount变成同步发送
     this.getChannelList()
     // 获取文章列表
@@ -93,7 +133,7 @@ export class ArticleList extends PureComponent {
         channels: res.data.data.channels,
       },
       () => {
-       return this.state.channels
+        return this.state.channels
       }
     )
   }
@@ -102,15 +142,14 @@ export class ArticleList extends PureComponent {
     const res = await getArticles()
     // console.log(res)
     this.setState({
-
-      articles: res.data.data
+      articles: res.data.data,
     })
   }
 
   render() {
-    const { total_count, results, } =this.state.articles
+    const { total_count, results } = this.state.articles
     // 打印出来存在组件的数据，观察需要的数据在哪里，然后再在上面columns逻辑里面定位数据
-    console.log(results)
+    // console.log(results)
     return (
       <div className={styles.root}>
         <Card
@@ -166,10 +205,9 @@ export class ArticleList extends PureComponent {
             </Form.Item>
 
             <Form.Item label="日期" name="data">
-              <DatePicker.RangePicker   />
+              <DatePicker.RangePicker />
             </Form.Item>
-           
-            
+
             <Form.Item>
               <Button type="primary" htmlType="submit">
                 筛选
@@ -178,7 +216,7 @@ export class ArticleList extends PureComponent {
           </Form>
         </Card>
 
-        <Card title={`根据筛选条件查询到${total_count}条结果`} >
+        <Card title={`根据筛选条件查询到${total_count}条结果`}>
           {/* 列数据，一一对应的数据源，rowKey处理报错 */}
           <Table columns={this.columns} dataSource={results} rowKey="id" />
         </Card>
