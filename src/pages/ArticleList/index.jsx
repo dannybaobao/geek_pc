@@ -102,6 +102,11 @@ export class ArticleList extends PureComponent {
       },
     },
   ]
+// 用于存放查询文章列表的所有参数
+ reqParams = {
+  page: 1,
+  per_page: 10,
+ }
 
   state = {
     // 频道列表数据，这里用数组存的，因为后面要用的时候遍历
@@ -113,6 +118,14 @@ export class ArticleList extends PureComponent {
   // 拿到表单的数据状态
   onFinish = (values) => {
     console.log('Success:', values)
+  }
+
+  // 分页监听
+  onChange = (page, pageSize) => {
+    // console.log(page, pageSize)
+    this.reqParams.page = page
+    this.reqParams.per_page = pageSize
+    this.getArticles()
   }
 
   //频道， 发起网络请求
@@ -138,7 +151,7 @@ export class ArticleList extends PureComponent {
   }
 
   async getArticles() {
-    const res = await getArticles()
+    const res = await getArticles(this.reqParams)
     // console.log(res)
     this.setState({
       articles: res.data.data,
@@ -227,7 +240,7 @@ export class ArticleList extends PureComponent {
             // 这两个值后面会发生变化
             pageSize: per_page,
             current: page,
-
+            onChange: this.onChange
           }}/>
         </Card>
       </div>
