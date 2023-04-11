@@ -13,3 +13,14 @@ export const getArticles = (params) => {
     params
   })
 } 
+
+/**
+ * 删除文章接口
+ * @param {*} id 
+ * @returns 
+ */
+export const delArticle = (id) => {
+  return dannyRequest.delete({
+    url: `/mp/articles/${id}`
+  })
+}

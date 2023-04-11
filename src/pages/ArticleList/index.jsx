@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined ,ExclamationCircleFilled} from '@ant-design/icons'
 import {
   Breadcrumb,
   Card,
@@ -11,6 +11,8 @@ import {
   DatePicker,
   Table,
   Tag,
+  Modal,
+  message,
 } from 'antd'
 import { Link } from 'react-router-dom'
 
@@ -18,12 +20,27 @@ import './index.module.scss'
 import styles from './index.module.scss'
 import { ArticleStatus } from 'api/constants'
 import { getChannels } from 'services/modules/channel'
-import { getArticles } from 'services/modules/article'
+import { delArticle, getArticles } from 'services/modules/article'
 import defaultImg from 'assets/error.png'
 
 const { Option } = Select
+const { confirm } = Modal
 
 export class ArticleList extends PureComponent {
+  
+  // 用于存放查询文章列表的所有参数
+  reqParams = {
+    page: 1,
+    per_page: 10,
+  }
+
+  state = {
+    // 频道列表数据，这里用数组存的，因为后面要用的时候遍历
+    channels: [],
+    // 观察数据，这里用对象存
+    articles: {},
+  }
+
   columns = [
     {
       title: '封面',
@@ -87,7 +104,7 @@ export class ArticleList extends PureComponent {
     },
     {
       title: '操作',
-      render(data) {
+      render : (data) => {
         return (
           <Space>
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
@@ -96,28 +113,66 @@ export class ArticleList extends PureComponent {
               danger
               shape="circle"
               icon={<DeleteOutlined />}
+              onClick= {() => this.handleDelete(data.id)}
             />
           </Space>
         )
       },
     },
-  ]
-// 用于存放查询文章列表的所有参数
- reqParams = {
-  page: 1,
-  per_page: 10,
- }
+  ] 
 
-  state = {
-    // 频道列表数据，这里用数组存的，因为后面要用的时候遍历
-    channels: [],
-    // 观察数据，这里用对象存
-    articles: {},
+  // 删除文章
+ handleDelete = (id) => {
+    console.log('删除', id)
+    // 弹窗提示, Modal.confirm,或者可以用解构的
+    confirm({
+    title: '温馨提示',
+    icon: <ExclamationCircleFilled />,
+    content: '您确定要删除这篇文章吗？',
+    onOk: async () => {
+      // console.log('OK');
+      // 发请求删除文章
+      // const res = await delArticle(id)
+        // console.log(res)
+      await delArticle(id)
+      this.getArticles()
+      message.success('删除成功')
+    }
+  })
   }
 
   // 拿到表单的数据状态
-  onFinish = (values) => {
-    console.log('Success:', values)
+  onFinish = ({ status, channel_id, date }) => {
+    // console.log('Success:', values)
+    if (status !== -1) {
+      // 不等于-1时存入status。 接口文档要求“全部”默认为不传，而这里全部是-1。以下else也如此。就可以来回查询。
+      this.reqParams.status = status
+    } else {
+      // else这里是处理bug，删掉status，全部为不传
+      delete this.reqParams.status
+    }
+    if (channel_id !== undefined) {
+      this.reqParams.channel_id = channel_id
+    } else {
+      delete this.reqParams.channel_id
+    }
+    if (date) {
+      // moment类型
+      this.reqParams.begin_pubdate = date[0]
+      .startOf('day')
+      .format('YYYY-MM-DD HH:mm:ss')
+      this.reqParams.end_pubdate = date[1]
+      .endOf('day')
+      .format('YYYY-MM-DD HH:mm:ss')
+    } else {
+      delete this.reqParams.begin_pubdate
+      delete this.reqParams.end_pubdate
+    }
+    // 如果是查询的操作，需要让页码值重新为1，还可以设置pageSize
+    this.reqParams.page = 1
+    // 以上拿到所有的参数后重新发送请求
+    this.getArticles()
+    console.log(this.reqParams)
   }
 
   // 分页监听
@@ -151,6 +206,7 @@ export class ArticleList extends PureComponent {
   }
 
   async getArticles() {
+    // reqparams存起来的请求参数
     const res = await getArticles(this.reqParams)
     // console.log(res)
     this.setState({
@@ -160,7 +216,7 @@ export class ArticleList extends PureComponent {
 
   render() {
     // console.log(this.state.articles),改变页码效果返回的是默认是10条
-    const { total_count, results ,per_page, page} = this.state.articles
+    const { total_count, results, per_page, page } = this.state.articles
     // 打印出来存在组件的数据，观察需要的数据在哪里，然后再在上面columns逻辑里面定位数据
     // console.log(results)
     return (
@@ -231,17 +287,18 @@ export class ArticleList extends PureComponent {
 
         <Card title={`根据筛选条件查询到${total_count}条结果`}>
           {/* 列数据，一一对应的数据源，rowKey处理报错 */}
-          <Table 
-          columns={this.columns} 
-          dataSource={results} 
-          rowKey="id" 
-          pagination={{
-            total: total_count,
-            // 这两个值后面会发生变化
-            pageSize: per_page,
-            current: page,
-            onChange: this.onChange
-          }}/>
+          <Table
+            columns={this.columns}
+            dataSource={results}
+            rowKey="id"
+            pagination={{
+              total: total_count,
+              // 这两个值后面会发生变化
+              pageSize: per_page,
+              current: page,
+              onChange: this.onChange,
+            }}
+          />
         </Card>
       </div>
     )

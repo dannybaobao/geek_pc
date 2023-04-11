@@ -68,6 +68,10 @@ get(config) {
 post(config) {
   return this.request({...config, method:"post"})
 }
+ 
+delete(config) {
+  return this.request({...config, method:"delete"})
+}
 
 }
 
