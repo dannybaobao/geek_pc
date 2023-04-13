@@ -64,7 +64,6 @@ export class LayoutPanel extends PureComponent {
                 <Popconfirm
                   placement="topLeft"
                   title='确定退出登录吗？'
-                  description='不要嘛老公'
                   onConfirm={this.onConfirm}
                   okText="确定"
                   cancelText="取消"
@@ -127,15 +126,16 @@ export class LayoutPanel extends PureComponent {
               >
                 <Routes>
                   {/* 可以不用精确匹配exact，默认就是 */}
-                  <Route path="/" element={<Home />}>
-                    {' '}
+                  <Route path="/" element={<Home />}></Route>
+                  <Route path="/list" element={<ArticleList />}></Route>
+                  {/* 新增路由，注意和下面对比 ,5router为了优先匹配要加exact，现在默认就是*/}
+                  <Route path="/publish" element={<ArticlePublish />}> </Route>
+                  
+                  {/* 新增加修改的路由 */} 
+                  <Route path='/publish/:id'
+                         element={<ArticlePublish />}>
                   </Route>
-                  <Route path="publish" element={<ArticlePublish />}>
-                    {' '}
-                  </Route>
-                  <Route path="list" element={<ArticleList />}>
-                    {' '}
-                  </Route>
+
                 </Routes>
               </Content>
             </Layout>

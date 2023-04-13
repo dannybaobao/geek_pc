@@ -6,7 +6,6 @@ import {
   Form,
   Radio,
   Button,
-  Select,
   Space,
   DatePicker,
   Table,
@@ -19,14 +18,21 @@ import { Link } from 'react-router-dom'
 import './index.module.scss'
 import styles from './index.module.scss'
 import { ArticleStatus } from 'api/constants'
-import { getChannels } from 'services/modules/channel'
 import { delArticle, getArticles } from 'services/modules/article'
 import defaultImg from 'assets/error.png'
+import Channel from 'components/Channel'
 
-const { Option } = Select
+
 const { confirm } = Modal
 
 export class ArticleList extends PureComponent {
+
+
+  handleEdit = (id) => {
+    // console.log(id)
+    // 注意带id对应的路由配置
+    window.location.href =`/home/publish/${id}`
+  }
   
   // 用于存放查询文章列表的所有参数
   reqParams = {
@@ -36,7 +42,7 @@ export class ArticleList extends PureComponent {
 
   state = {
     // 频道列表数据，这里用数组存的，因为后面要用的时候遍历
-    channels: [],
+    // channels: [],抽出去
     // 观察数据，这里用对象存
     articles: {},
   }
@@ -107,7 +113,9 @@ export class ArticleList extends PureComponent {
       render : (data) => {
         return (
           <Space>
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={
+              () => {this.handleEdit(data.id)}
+            } />
             <Button
               type="primary"
               danger
@@ -186,24 +194,25 @@ export class ArticleList extends PureComponent {
   //频道， 发起网络请求
   componentDidMount() {
     // 为了性能，把两个异步请求抽出去，让didmount变成同步发送
-    this.getChannelList()
+    // this.getChannelList()  抽出去做成组件
     // 获取文章列表
     this.getArticles()
   }
 
-  async getChannelList() {
-    const res = await getChannels()
-    // console.log(res)
-    // 把请求下来的数据储存起来，这里用数组存的，查看是否存成功，去控制台coponents搜索查看
-    this.setState(
-      {
-        channels: res.data.data.channels,
-      },
-      () => {
-        return this.state.channels
-      }
-    )
-  }
+  //  抽出去做成组件
+  // async getChannelList() {
+  //   const res = await getChannels()
+  //   // console.log(res)
+  //   // 把请求下来的数据储存起来，这里用数组存的，查看是否存成功，去控制台coponents搜索查看
+  //   this.setState(
+  //     {
+  //       channels: res.data.data.channels,
+  //     },
+  //     () => {
+  //       return this.state.channels
+  //     }
+  //   )
+  // }
 
   async getArticles() {
     // reqparams存起来的请求参数
@@ -258,8 +267,13 @@ export class ArticleList extends PureComponent {
               </Radio.Group>
             </Form.Item>
 
+
+
+           
+            {/*  抽出去做成组件*/}
             <Form.Item label="频道" name="channel_id">
-              <Select
+              <Channel/>
+              {/* <Select
                 mode="multiple"
                 style={{ width: '20%' }}
                 placeholder="请选择频道"
@@ -270,7 +284,7 @@ export class ArticleList extends PureComponent {
                     <Space>{item.name}</Space>
                   </Option>
                 ))}
-              </Select>
+              </Select> */}
             </Form.Item>
 
             <Form.Item label="日期" name="data">

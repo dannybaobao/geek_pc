@@ -20,6 +20,12 @@ import { getToken , hasToken, removeToken} from "utils/storage"
      
       return res
     },(err) => {
+      if (!err.response) {
+        // 后端崩掉，前段不至于没有数据报错
+        message.error('网络繁忙，请稍后重')
+        // 直接给一个错误信息，不要new error否则还会崩掉页面，或者用就每一个请求加try catch
+        return Promise.reject('网络繁忙，请稍后重试')
+      }
       // console.log(err.response)
       // 对响应错误做点什么，token是服务器响应的
       // 对token过期（理解为token是错误的，但是还能在页面停留）进行统一的处理
